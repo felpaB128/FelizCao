@@ -1,0 +1,511 @@
+/* src/Home.css */
+
+/* Faz a página inteira ter o mesmo fundo e remover margens padrão */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #f4f4f5;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Página: ocupa toda a altura, fundo neutro, sempre centralizada */
+.page {
+  min-height: 100vh;
+  background-color: #f4f4f5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  box-sizing: border-box;
+}
+
+/* Content: largura total com limite fluido para desktop grande */
+.content {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Cabeçalho: usa clamp para tamanho de fonte responsivo */
+.header {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  font-size: clamp(12px, 1.5vw, 14px);
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Botão adicionar flutuante premium no canto inferior direito */
+.toolbar {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1000;
+}
+
+/* container do FAB (inclui pulso) */
+.add-button.fancy {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* anel de pulso atrás do círculo */
+.add-button.fancy::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25), transparent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* círculo principal com gradiente */
+.add-inner {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2563eb, #0b4b91);
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.45),
+    0 0 0 1px rgba(15, 23, 42, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.2s ease;
+}
+
+/* ícone + perfeitamente centralizado */
+.add-plus {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-1px);
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35);
+  transition: transform 0.2s ease;
+}
+
+/* hover: botão sobe, plus gira levemente, pulso aparece */
+.add-button.fancy:hover .add-inner {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 34px rgba(15, 23, 42, 0.55),
+    0 0 0 1px rgba(30, 64, 175, 0.6);
+  background: linear-gradient(135deg, #2f6df3, #11408b);
+}
+
+.add-button.fancy:hover .add-plus {
+  transform: translateY(-1px) rotate(12deg);
+}
+
+.add-button.fancy:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* active: volta um pouco, sem perder a sombra */
+.add-button.fancy:active .add-inner {
+  transform: translateY(0);
+  box-shadow:
+    0 9px 22px rgba(15, 23, 42, 0.45),
+    0 0 0 1px rgba(30, 64, 175, 0.5);
+}
+
+.add-button.fancy:active .add-plus {
+  transform: translateY(0) rotate(6deg);
+}
+
+/* em telas muito pequenas, só ajusta tamanho */
+@media (max-width: 480px) {
+  .add-inner {
+    width: 52px;
+    height: 52px;
+  }
+
+  .add-plus {
+    font-size: 28px;
+  }
+}
+
+/* Container da lista: painel branco que se adapta na horizontal */
+.lista-container {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px 12px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+}
+
+/* Card: 3 colunas iguais → esquerda, meio, direita */
+.card-item {
+  display: flex;
+  flex-direction: column; /* para permitir área de detalhes embaixo */
+  padding: 10px 20px;
+  margin-bottom: 8px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.12s ease;
+}
+
+/* estado expandido do card */
+.card-item.card-expanded {
+  background-color: #eef2ff;
+}
+
+/* linha principal do card (3 colunas) */
+.card-header-row {
+  display: flex;
+  align-items: center;
+}
+
+/* cada coluna tem largura fixa em relação ao card */
+.card-col {
+  display: flex;
+  align-items: center;
+}
+
+/* esquerda: ~33% da linha */
+.card-left {
+  width: 33.33%;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* meio: ~33% da linha, contador centralizado aqui */
+.card-middle {
+  width: 33.33%;
+  justify-content: center;
+}
+
+/* direita: ~33% da linha, botão colado à direita da coluna */
+.card-right {
+  width: 33.33%;
+  justify-content: flex-end;
+}
+
+/* Ícone "caixinha" à esquerda */
+.card-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.6px solid #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon-inner {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.6px solid #18181b;
+}
+
+/* Texto do item */
+.card-title {
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 500;
+  color: #18181b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Contador de itens (centralizado dentro da coluna do meio) */
+.item-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.counter-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d8;
+  background-color: #f9fafb;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.counter-button:hover {
+  background-color: #e5e7eb;
+}
+
+.counter-text {
+  min-width: 34px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Botão principal de remover */
+.remove-button {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid #ef4444;
+  background-color: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.remove-button:hover {
+  background-color: #ef4444;
+  color: #fef2f2;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.5);
+}
+
+.remove-button:active {
+  transform: scale(0.97);
+}
+
+/* Texto quando a lista estiver vazia */
+.empty-text {
+  margin: 8px 4px 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ===== MODAL ESTILO CELULAR (CENTRALIZADO) ===== */
+.confirm-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-dialog {
+  background: white;
+  border-radius: 20px;
+  padding: 24px 20px 32px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  animation: scaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.confirm-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.confirm-message {
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.4;
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.confirm-cancel {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-cancel:hover {
+  background: #e5e7eb;
+}
+
+.confirm-delete {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.confirm-delete:hover {
+  background: #dc2626;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== Breakpoints ===== */
+@media (max-width: 900px) {
+  .card-item {
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 16px 8px;
+  }
+
+  .lista-container {
+    padding: 12px 8px;
+  }
+
+  .card-item {
+    padding: 10px 10px;
+  }
+
+  .card-left {
+    gap: 8px;
+  }
+
+  .card-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .card-icon-inner {
+    width: 16px;
+    height: 12px;
+  }
+
+  .remove-button {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .counter-button {
+    width: 22px;
+    height: 22px;
+  }
+
+  .counter-text {
+    min-width: 30px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .card-item {
+    padding: 8px;
+  }
+
+  .card-title {
+    font-size: 12px;
+  }
+}
+
+/* ===== DETALHES DO CARD EXPANDÍVEL ===== */
+.card-details {
+  margin-top: 8px;
+  padding: 8px 12px 6px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* campo de peso alinhado à direita dentro do expandir */
+.venda-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.venda-peso {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.venda-input {
+  width: 90px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid #d4d4d8;
+  font-size: 12px;
+}
+
+.venda-select {
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid #d4d4d8;
+  font-size: 12px;
+  background-color: #f9fafb;
+}
+
+.venda-total {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+}
