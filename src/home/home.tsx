@@ -3,14 +3,11 @@ import { useState } from "react";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { PopUp } from "../PopUp/PopUp";
 import "./Home.css";
-
-type Produto = {
-  id: number;
-  nome: string;
-  precoSaco: number;
-  precoQuilo: number;
-  quantidadeSacos: number;
-};
+import {
+  calcularValorVenda,
+  type Produto,
+  type VendaInfo,
+} from "../utils/calculoVenda";
 
 export function Home() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -22,9 +19,7 @@ export function Home() {
   const [isCriarOpen, setIsCriarOpen] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  const [vendaPeso, setVendaPeso] = useState<
-    Record<number, { valor: string; unidade: "kg" | "g" }>
-  >({});
+  const [vendaPeso, setVendaPeso] = useState<Record<number, VendaInfo>>({});
   const [vendaTotal, setVendaTotal] = useState<Record<number, number>>({});
 
   function abrirConfirmacao(id: number, nome: string) {
@@ -84,33 +79,25 @@ export function Home() {
     novoValor: string | "kg" | "g"
   ) {
     setVendaPeso((estado) => {
-      const atual = estado[id] ?? { valor: "", unidade: "kg" as const };
+      const atual: VendaInfo = estado[id] ?? {
+        valor: "",
+        unidade: "kg",
+      };
       return {
         ...estado,
         [id]: {
           ...atual,
-          [campo]: novoValor,
+          [campo]: novoValor as any,
         },
       };
     });
   }
 
-  function calcularValorVenda(produto: Produto) {
-    const info = vendaPeso[produto.id];
-    if (!info || !info.valor) return 0;
-
-    const pesoNum = Number(info.valor);
-    if (!pesoNum || pesoNum <= 0) return 0;
-
-    const pesoKg = info.unidade === "kg" ? pesoNum : pesoNum / 1000;
-    const total = pesoKg * produto.precoQuilo;
-    return total;
-  }
-
   function handleRecalcularVenda(id: number) {
     const produto = produtos.find((p) => p.id === id);
     if (!produto) return;
-    const total = calcularValorVenda(produto);
+    const info = vendaPeso[id];
+    const total = calcularValorVenda(produto, info);
     setVendaTotal((estado) => ({
       ...estado,
       [id]: total,
@@ -142,10 +129,10 @@ export function Home() {
         <div className="lista-container">
           {produtos.map((produto) => {
             const isExpanded = expandedId === produto.id;
-            const vendaInfo =
-              vendaPeso[produto.id] ?? { valor: "", unidade: "kg" as const };
+            const vendaInfo: VendaInfo =
+              vendaPeso[produto.id] ?? { valor: "", unidade: "kg" };
             const totalVenda =
-              vendaTotal[produto.id] ?? calcularValorVenda(produto);
+              vendaTotal[produto.id] ?? calcularValorVenda(produto, vendaInfo);
 
             return (
               <div
