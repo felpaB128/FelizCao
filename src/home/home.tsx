@@ -191,15 +191,38 @@ export function Home() {
                   </div>
                 </div>
 
-                {/* área expandida: infos + venda por peso alinhada à direita */}
+                {/* área expandida: infos em linha + venda por peso */}
                 {isExpanded && (
                   <div
                     className="card-details"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <p>Preço do saco: R$ {produto.precoSaco.toFixed(2)}</p>
-                    <p>Preço do quilo: R$ {produto.precoQuilo.toFixed(2)}</p>
-                    <p>Quantidade de sacos: {produto.quantidadeSacos}</p>
+                    <div className="detalhes-head-row">
+                      <span className="detalhe-head">Preço saco</span>
+                      <span className="detalhe-head">Preço quilo</span>
+                      <span className="detalhe-head">Qtd. sacos</span>
+                      <span className="detalhe-head">Kg vendidos</span>
+                      <span className="detalhe-head">Total</span>
+                    </div>
+
+                    <div className="detalhes-value-row">
+                      <span className="detalhe-value">
+                        R$ {produto.precoSaco.toFixed(2)}
+                      </span>
+                      <span className="detalhe-value">
+                        R$ {produto.precoQuilo.toFixed(2)}
+                      </span>
+                      <span className="detalhe-value">
+                        {produto.quantidadeSacos}
+                      </span>
+                      <span className="detalhe-value">
+                        {vendaInfo.valor || "-"}{" "}
+                        {vendaInfo.valor && vendaInfo.unidade}
+                      </span>
+                      <span className="detalhe-value">
+                        R$ {totalVenda.toFixed(2)}
+                      </span>
+                    </div>
 
                     <div className="venda-row">
                       <div className="venda-peso">
@@ -234,9 +257,6 @@ export function Home() {
                           <option value="kg">kg</option>
                           <option value="g">g</option>
                         </select>
-                        <div className="venda-total">
-                          R$ {totalVenda.toFixed(2)}
-                        </div>
                       </div>
                     </div>
                   </div>
